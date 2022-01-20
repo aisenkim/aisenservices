@@ -2,15 +2,18 @@ package com.aisencode.customer.service;
 
 import com.aisencode.customer.Customer;
 import com.aisencode.customer.dto.CustomerRegistrationRequest;
+import com.aisencode.customer.dto.FraudCheckResponse;
 import com.aisencode.customer.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 @RequiredArgsConstructor
 @Service
 public class CustomerService {
 
     private final CustomerRepository customerRepository;
+    private final RestTemplate restTemplate;
 
     public void registerCustomer(CustomerRegistrationRequest request) {
         Customer customer = Customer.builder()
@@ -19,8 +22,26 @@ public class CustomerService {
                 .email(request.getEmail())
                 .build();
 
-        //TODO  - validate
-        customerRepository.save(customer);
+        // TODO  - check if email valid
+        // TODO - check if email not taken
+        customerRepository.saveAndFlush(customer);
+        
+        // TODO  - check if fraudster
+        FraudCheckResponse fraudCheckResponse = restTemplate.getForObject(
+                "http://localhost:8081/api/v1/fraud-check/{customerId}",
+                FraudCheckResponse.class,
+                customer.getId()
+        );
+
+        if (fraudCheckResponse == null) {
+            throw new NullPointerException("Fraud check has failed");
+        }
+
+        if (fraudCheckResponse.getIsFraudster()) {
+            throw new IllegalStateException("fraudster");
+        }
+
+        // TODO - send notification
     }
 
 }
