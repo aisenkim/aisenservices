@@ -1,5 +1,7 @@
-package com.aisencode.customer;
+package com.aisencode.customer.controller;
 
+import com.aisencode.customer.dto.CustomerRegistrationRequest;
+import com.aisencode.customer.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;

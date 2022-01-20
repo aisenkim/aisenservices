@@ -1,5 +1,6 @@
-package com.aisencode.customer;
+package com.aisencode.customer.dto;
 
+import com.aisencode.customer.Customer;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

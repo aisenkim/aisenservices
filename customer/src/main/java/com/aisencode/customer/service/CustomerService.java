@@ -1,5 +1,8 @@
-package com.aisencode.customer;
+package com.aisencode.customer.service;
 
+import com.aisencode.customer.Customer;
+import com.aisencode.customer.dto.CustomerRegistrationRequest;
+import com.aisencode.customer.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
