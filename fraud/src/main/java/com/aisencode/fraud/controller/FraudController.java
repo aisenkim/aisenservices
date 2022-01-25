@@ -1,6 +1,6 @@
 package com.aisencode.fraud.controller;
 
-import com.aisencode.fraud.dto.FraudCheckResponse;
+import com.aisencode.clients.fraud.FraudCheckResponse;
 import com.aisencode.fraud.service.FraudCheckService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +14,7 @@ public class FraudController {
 
     private final FraudCheckService fraudCheckService;
 
+    // CHANGED FRAUDCHECKRESPONSE BY IMPORTING FROM CLIENTS (OPEN FEIGN)
     @GetMapping(path = "{customerId}")
     public FraudCheckResponse isFraudster(@PathVariable("customerId") Integer customerId) {
         boolean isFraudulentCustomer = fraudCheckService.isFraudulentCustomer(customerId);
