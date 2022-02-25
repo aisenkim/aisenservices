@@ -36,7 +36,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
             if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                 return onError(exchange, "No authorization header", HttpStatus.UNAUTHORIZED);
             }
-            log.info("Hit here");
+            log.info("[APIGW] -> CHECKING FOR AUTHORIZATION HEADER");
             String authHeader = request.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
             String jwt = authHeader.replace("Bearer ", "");
 
@@ -55,7 +55,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
     }
 
     /**
-     * Validating jwt token
+     * Validating jwt token by checking if userid exists inside the token
      */
     private boolean isJwtValid(String jwt) {
         boolean returnValue = true;
