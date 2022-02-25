@@ -10,3 +10,5 @@ eureka:
     fetch-registry: false
     register-with-eureka: false
     # Since it's server, it is set to false
+  instance:
+    prefer-ip-address: true

@@ -9,10 +9,27 @@ spring:
   cloud:
     gateway:
       routes:
+        - id: customer-register
+          uri: lb://CUSTOMER
+          predicates:
+            - Path=/api/v1/customers
+            - Method=POST
+        - id: customer-login
+          uri: lb://CUSTOMER
+          predicates:
+            - Path=/api/v1/customers/login
+            - Method=POST
         - id: customer
           uri: lb://CUSTOMER
           predicates:
             - Path=/api/v1/customers/**
+            - Header=Authorization, Bearer (.*)
+          filters:
+            - AuthorizationHeaderFilter
+        - id: account-management
+          uri: lb://ACCOUNT-MANAGEMENT
+          predicates:
+            - Path=/api/v1/account/**
 
 
 eureka:
@@ -21,3 +38,9 @@ eureka:
       defaultZone: http://localhost:8761/eureka
     fetch-registry: true
     register-with-eureka: true
+  instance:
+    prefer-ip-address: true
+
+
+token:
+  secret: rlacndgusrlacndgusrlacndgus151515

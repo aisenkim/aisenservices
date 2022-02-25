@@ -1,11 +1,11 @@
 server:
-  port: 8080
+  port: 8087
 spring:
   application:
-    name: customer
+    name: account-management
   datasource:
     password: password
-    url: jdbc:postgresql://localhost:5432/customer
+    url: jdbc:postgresql://localhost:5432/fraud
     username: postgres
   jpa:
     hibernate:
@@ -17,19 +17,9 @@ spring:
     show-sql: true
   zipkin:
     base-url: http://localhost:9411
-  rabbitmq:
-    addresses: localhost:5672
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka
     fetch-registry: true
     register-with-eureka: true
-gateway:
-  ip: 192.168.1.216
-token:
-  expiration_time: 864000000
-  secret: rlacndgusrlacndgusrlacndgus151515
-login:
-  url:
-    path: /api/v1/customers/login

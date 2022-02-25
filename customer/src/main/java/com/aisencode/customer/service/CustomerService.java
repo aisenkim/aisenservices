@@ -6,24 +6,40 @@ import com.aisencode.clients.fraud.FraudClient;
 import com.aisencode.clients.fraud.NotificationRequest;
 import com.aisencode.customer.Customer;
 import com.aisencode.customer.dto.CustomerRegistrationRequest;
+import com.aisencode.customer.dto.CustomerRegistrationResponse;
 import com.aisencode.customer.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class CustomerService {
+public class CustomerService implements UserDetailsService {
 
     private final CustomerRepository customerRepository;
     private final FraudClient fraudClient;
 
     private final RabbitMQMessageProducer rabbitMQMessageProducer;
 
-    public void registerCustomer(CustomerRegistrationRequest request) {
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    public CustomerRegistrationResponse registerCustomer(CustomerRegistrationRequest request) {
+
+        // ENCRYPT PASSWORD (SPRING SECURITY)
+        String encryptedPassword = this.bCryptPasswordEncoder.encode(request.getPassword());
+
         Customer customer = Customer.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .email(request.getEmail())
+                .password(encryptedPassword)
                 .build();
 
         // TODO  - check if email valid
@@ -62,6 +78,30 @@ public class CustomerService {
                 "internal.notification.routing-key"
         );
 
+        return new CustomerRegistrationResponse(request.getFirstName(), request.getLastName(), request.getEmail());
     }
 
+    public Customer getCustomerDetailsByEmail(String email) {
+        Customer foundCustomer = customerRepository.findCustomerByEmail(email);
+        if (foundCustomer == null) {
+            throw new UsernameNotFoundException(email);
+        }
+
+        return foundCustomer;
+    }
+
+    public List<Customer> getCustomers() {
+        return customerRepository.findAll();
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Customer foundCustomer = customerRepository.findCustomerByEmail(username);
+        if (foundCustomer == null) {
+            throw new UsernameNotFoundException(username);
+        }
+        // SET third parameter to false if you want to enable it after email verification completes
+        return new User(foundCustomer.getEmail(), foundCustomer.getPassword(), true, true, true, true, new ArrayList<>());
+
+    }
 }
