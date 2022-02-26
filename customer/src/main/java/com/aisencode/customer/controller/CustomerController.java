@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -28,6 +30,9 @@ public class CustomerController {
         return ResponseEntity.status(HttpStatus.CREATED).body(customer);
     }
 
+//    @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.id") // #id -> parameter name and principal.id can be defined inside the UserPrincipal class constructor
+//    @PreAuthorize("hasAuthority('DELETE_AUTHORITY')")
+    @Secured("ROLE_ADMIN")
     @GetMapping("/all")
     public ResponseEntity<List<Customer>> getCustomers() {
         return ResponseEntity.ok().body(customerService.getCustomers());

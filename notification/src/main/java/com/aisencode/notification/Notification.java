@@ -19,7 +19,7 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "notification_id_sequence")
     private Integer notificationId;
 
-    private Integer toCustomerId;
+    private Long toCustomerId;
 
     private String toCustomerEmail;
 

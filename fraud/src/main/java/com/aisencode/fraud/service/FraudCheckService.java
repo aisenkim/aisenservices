@@ -13,7 +13,7 @@ public class FraudCheckService {
 
     private final FraudCheckHistoryRepository fraudCheckHistoryRepository;
 
-    public boolean isFraudulentCustomer(Integer customerId) {
+    public boolean isFraudulentCustomer(Long customerId) {
         //TODO - Using 3rd party or check email and etc
         fraudCheckHistoryRepository.save(
                 FraudCheckHistory.builder()

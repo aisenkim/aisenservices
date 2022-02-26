@@ -1,17 +1,17 @@
 package com.aisencode.customer;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
-@Data
 @Builder
 @Entity
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Role {
@@ -23,11 +23,12 @@ public class Role {
     @Column(nullable = false, length = 20)
     private String name;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "roles")
-    private List<Customer> customers;
+    private Collection<Customer> customers;
 
     @ManyToMany(cascade = {CascadeType.PERSIST}, fetch = FetchType.EAGER)
     @JoinTable(name = "roles_authorities", joinColumns = @JoinColumn(name = "roles_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "authorities_id", referencedColumnName = "id"))
-    private List<Authority> authorities;
+    private Collection<Authority> authorities;
 }

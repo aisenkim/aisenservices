@@ -2,15 +2,14 @@ package com.aisencode.customer;
 
 import javax.validation.constraints.*;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Builder
 @Entity
 @AllArgsConstructor
@@ -20,7 +19,7 @@ public class Customer {
     @Id
     @SequenceGenerator(name = "customer_id_sequence", sequenceName = "customer_id_sequence")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "customer_id_sequence")
-    private Integer id;
+    private Long id;
 
     @NotNull(message = "Firstname can't be blank!")
     @Size(min = 2, message = "First name must not be less than 2 characters")
@@ -38,8 +37,8 @@ public class Customer {
     private String password;
 
     @ManyToMany(cascade = {CascadeType.PERSIST}, fetch = FetchType.EAGER)
-    @JoinTable(name = "users_roles", joinColumns=@JoinColumn(name="users_id", referencedColumnName = "id"),
+    @JoinTable(name = "customer_roles", joinColumns=@JoinColumn(name="customer_id", referencedColumnName = "id"),
     inverseJoinColumns = @JoinColumn(name="roles_id", referencedColumnName = "id"))
-    private List<Role> roles;
+    private Collection<Role> roles;
 
 }

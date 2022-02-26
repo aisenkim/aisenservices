@@ -8,12 +8,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class NotificationRequest {
 
-    private Integer toCustomerId;
+    private Long toCustomerId;
     private String toCustomerName;
     private String message;
 
     @Builder
-    public NotificationRequest(Integer toCustomerId, String toCustomerName, String message) {
+    public NotificationRequest(Long toCustomerId, String toCustomerName, String message) {
         this.toCustomerId = toCustomerId;
         this.toCustomerName = toCustomerName;
         this.message = message;

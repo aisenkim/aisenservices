@@ -32,18 +32,9 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-
     private final CustomerService customerService;
     private final Environment environment;
-//    private final AuthenticationManager authenticationManager;
     private final SecretKey secretKey;
-
-//    @Autowired
-//    public AuthenticationFilter(CustomerService customerService, Environment environment, AuthenticationManager authenticationManager) {
-//        this.customerService = customerService;
-//        this.environment = environment;
-//        super.setAuthenticationManager(authenticationManager);
-//    }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -70,12 +61,14 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        String username = ((User) authResult.getPrincipal()).getUsername();
+//        String username = ((User) authResult.getPrincipal()).getUsername();
+        // Now getting it from UserPrincipal(Class that I made) instead of User class from SpringSecurity
+        String username = ((UserPrincipal) authResult.getPrincipal()).getUsername();
         Customer customerDetailsByEmail = customerService.getCustomerDetailsByEmail(username);
 
         // Generate JWT token
         String token = Jwts.builder()
-                .setSubject(customerDetailsByEmail.getId().toString())
+                .setSubject(customerDetailsByEmail.getEmail())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(environment.getProperty("token.expiration_time"))))
                 .signWith(secretKey)

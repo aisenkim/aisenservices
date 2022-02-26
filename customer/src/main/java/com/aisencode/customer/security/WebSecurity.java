@@ -1,19 +1,22 @@
 package com.aisencode.customer.security;
 
+import com.aisencode.customer.repository.CustomerRepository;
 import com.aisencode.customer.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.crypto.SecretKey;
 
 @RequiredArgsConstructor
 @Configuration
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)  // need this for method level security
 @EnableWebSecurity
 public class WebSecurity extends WebSecurityConfigurerAdapter {
 
@@ -21,6 +24,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final CustomerService customerService;
     private final SecretKey secretKey;
+    private final CustomerRepository customerRepository;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -30,10 +34,14 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 //                .permitAll();
 
         // ONLY ALLOW REQUESTS FROM APIGW
-        http.authorizeRequests().antMatchers("/**")
+        http.authorizeRequests()
+//                .antMatchers(HttpMethod.DELETE, "/**").hasRole("ADMIN")  // Trying method level security
+                .antMatchers("/**")
                 .hasIpAddress(environment.getProperty("gateway.ip"))
                 .and()
-                .addFilter(getAuthenticationFilter());
+                .addFilter(getAuthenticationFilter())
+                .addFilter(new AuthorizationFilter(authenticationManager(), customerRepository, environment)); // adding fields because AuthorizationFilter can't do constructor injection due to super constructor
+
         http.headers().frameOptions().disable();
     }
 

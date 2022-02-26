@@ -13,5 +13,5 @@ public interface FraudClient {
     // THIS IS WHAT OPEN FEIGN DOES
     // NOW DON'T HAVE TO USE REST CONTROLLER INSIDE CUSTOMER SERVICE
     @GetMapping(path = "api/v1/fraud-check/{customerId}")
-    FraudCheckResponse isFraudster(@PathVariable("customerId") Integer customerId);
+    FraudCheckResponse isFraudster(@PathVariable("customerId") Long customerId);
 }

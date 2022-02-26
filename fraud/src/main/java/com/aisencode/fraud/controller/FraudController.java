@@ -16,7 +16,7 @@ public class FraudController {
 
     // CHANGED FRAUDCHECKRESPONSE BY IMPORTING FROM CLIENTS (OPEN FEIGN)
     @GetMapping(path = "{customerId}")
-    public FraudCheckResponse isFraudster(@PathVariable("customerId") Integer customerId) {
+    public FraudCheckResponse isFraudster(@PathVariable("customerId") Long customerId) {
         boolean isFraudulentCustomer = fraudCheckService.isFraudulentCustomer(customerId);
         log.info("Fraud check request for customer {}", customerId);
         return FraudCheckResponse.builder()

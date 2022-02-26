@@ -1,14 +1,13 @@
 package com.aisencode.customer;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Builder
 @Entity
 @AllArgsConstructor
@@ -22,6 +21,7 @@ public class Authority {
     @Column(nullable = false, length = 20)
     private String name;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "authorities")
     private List<Role> roles;
 }
