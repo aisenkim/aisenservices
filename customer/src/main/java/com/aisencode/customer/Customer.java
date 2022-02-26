@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @Builder
@@ -35,5 +36,10 @@ public class Customer {
 
     @NotNull(message = "Password can't be blank")
     private String password;
+
+    @ManyToMany(cascade = {CascadeType.PERSIST}, fetch = FetchType.EAGER)
+    @JoinTable(name = "users_roles", joinColumns=@JoinColumn(name="users_id", referencedColumnName = "id"),
+    inverseJoinColumns = @JoinColumn(name="roles_id", referencedColumnName = "id"))
+    private List<Role> roles;
 
 }
